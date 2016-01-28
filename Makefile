@@ -1,15 +1,19 @@
-analysis.tar.gz : *.dat
+include config.mk
+
+TXT_FILES=$(wildcard books/*.txt)
+
+analysis.tar.gz : *.dat $(COUNT_SRC)
 	tar -czf $@ $^
+
+.PHONY : variables
+variables:
+	@echo TXT_FILES: $(TXT_FILES)
 
 .PHONY : dats
 dats : isles.dat abyss.dat last.dat
 
-isles.dat : books/isles.txt wordcount.py
-	python wordcount.py $< $@
-abyss.dat : books/abyss.txt wordcount.py
-	python wordcount.py $< $@
-last.dat : books/last.txt wordcount.py
-	python wordcount.py $< $@
+%.dat : books/%.txt $(COUNT_SRC)
+	$(COUNT_EXE) $< $*.dat
 
 .PHONY : clean
 clean : 
